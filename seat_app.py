@@ -283,7 +283,7 @@ class SeatingApp:
 
         for tag, (sx, sy) in self.seat_positions.items():
             if abs(sx - x) < 35 and abs(sy - y) < 35:
-                # 拖曳的是從座位來
+                # 拖曳的是從座位
                 if self.drag_data["source_tag"]:
                     old_tag = self.drag_data["source_tag"]
 
@@ -298,9 +298,9 @@ class SeatingApp:
                     # 把自己放到新位置
                     self.assigned[tag] = self.drag_data["text"]
 
-                # 拖曳的是從清單來
+                # 拖曳的是從清單
                 else:
-                    # 如果新位置有別人 → 那個人送回清單
+                    # 如果新位置有人 → 那個人送回清單
                     if tag in self.assigned:
                         old_name = self.assigned[tag]
                         if old_name not in self.people:
