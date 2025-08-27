@@ -5,7 +5,7 @@
 這是一個以 **Tkinter + ttkbootstrap** 製作的拖曳式排座工具。  
 適用於**婚宴、聚會、會議**等需要圓桌座位安排的場合。
 
-![](docs/demo.gif)
+![](demo/demo.gif)
 
 ---
 ## 功能特色
