@@ -18,7 +18,7 @@ class SeatingApp:
         self.assigned = {}
         self.people = []
 
-        # 顏色池
+        # 顏色
         self.color_pool = ["#FFB3BA", "#c7e9ff", "#c7e9ff", "#c7e9ff"
                             , "#c7e9ff", "#c7e9ff", "#c7e9ff", "#c7e9ff"
                             , "#c7e9ff", "#c7e9ff", "#c7e9ff", "#c7e9ff"
@@ -283,7 +283,7 @@ class SeatingApp:
 
         for tag, (sx, sy) in self.seat_positions.items():
             if abs(sx - x) < 35 and abs(sy - y) < 35:
-                # 拖曳的是從座位
+                # 從座位拖曳
                 if self.drag_data["source_tag"]:
                     old_tag = self.drag_data["source_tag"]
 
@@ -298,7 +298,7 @@ class SeatingApp:
                     # 把自己放到新位置
                     self.assigned[tag] = self.drag_data["text"]
 
-                # 拖曳的是從清單
+                # 從清單拖曳
                 else:
                     # 如果新位置有人 → 那個人送回清單
                     if tag in self.assigned:
