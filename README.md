@@ -58,6 +58,7 @@ Designed for **banquets**, **weddings**, **conferences**, and other events where
    ├── README.md
    ├── README_zh-TW.md
    ├── LICENSE
+   ├── .gitattributes
    ├── .gitignore
    ├── requirements.txt
    ├── sample_names.txt   # Sample List

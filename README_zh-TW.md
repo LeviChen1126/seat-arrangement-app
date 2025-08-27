@@ -57,6 +57,7 @@
    ├── README.md
    ├── README_zh-TW.md
    ├── LICENSE
+   ├── .gitattributes
    ├── .gitignore
    ├── requirements.txt
    ├── sample_names.txt   # 範例名單
