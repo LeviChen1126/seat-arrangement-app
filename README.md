@@ -29,7 +29,13 @@ Designed for **banquets**, **weddings**, **conferences**, and other events where
 
 ---
 
-## Installation / Usage Example
+## Download
+
+You can download the latest Windows executable (`.exe`) from the **[Latest Release](https://github.com/LeviChen1126/seat-arrangement-app/releases/latest)** page.
+
+---
+
+## Installation / Usage Example (Source Code)
 
 1. **Prerequisites**
    - Install **Python 3.9+**  

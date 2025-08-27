@@ -28,7 +28,13 @@
 
 ---
 
-## 安裝 / 使用範例
+## 下載
+
+可直接從 **[Latest Release](https://github.com/LeviChen1126/seat-arrangement-app/releases/latest)** 頁面下載最新的 Windows 執行檔（`.exe`）。
+
+---
+
+## 安裝 / 使用範例 （原始碼）
 
 1. **前置**
    - 安裝 **Python 3.9+**  
