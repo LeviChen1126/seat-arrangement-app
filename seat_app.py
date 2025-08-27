@@ -19,14 +19,20 @@ class SeatingApp:
         self.assigned = {}
         self.people = []
 
-        self.color_pool = [
-            "#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9", "#BAE1FF",
-            "#D5BAFF", "#FFBAED", "#FFE5B4", "#C9F0FF", "#E6E6FA",
-            "#F0E68C", "#D3FFCE", "#ADD8E6", "#E0BBE4", "#FFDAB9"
-        ][:self.max_tables]
+        # 顏色池
+        self.color_pool = ["#FFB3BA", "#c7e9ff", "#c7e9ff", "#c7e9ff"
+                            , "#c7e9ff", "#c7e9ff", "#c7e9ff", "#c7e9ff"
+                            , "#c7e9ff", "#c7e9ff", "#c7e9ff", "#c7e9ff"
+                            , "#c7e9ff", "#c7e9ff", "#c7e9ff"][:self.max_tables]
+        # self.color_pool = [
+        #     "#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9", "#BAE1FF",
+        #     "#D5BAFF", "#FFBAED", "#FFE5B4", "#C9F0FF", "#E6E6FA",
+        #     "#F0E68C", "#D3FFCE", "#ADD8E6", "#E0BBE4", "#FFDAB9"
+        # ][:self.max_tables]
 
         self.drag_data = {"widget": None, "text": "", "floating": None, "source_tag": None}
 
+        # 統計標籤
         self.stats_label = tk.Label(self.root, text="總人數: 0｜已安排: 0｜未安排: 0", font=self.font_default, anchor="w")
         self.stats_label.pack(fill="x", padx=10, pady=(0, 5))
 
@@ -49,6 +55,11 @@ class SeatingApp:
         self.entry_tables.insert(0, "15")
         self.entry_tables.pack(side="left", padx=5)
 
+        tk.Label(control_frame, text="主桌座位數:", font=self.font_default).pack(side="left")
+        self.entry_main_seats = tk.Entry(control_frame, width=5, font=self.font_default)
+        self.entry_main_seats.insert(0, "12")
+        self.entry_main_seats.pack(side="left", padx=5)
+
         tk.Label(control_frame, text="每桌座位數:", font=self.font_default).pack(side="left")
         self.entry_seats = tk.Entry(control_frame, width=5, font=self.font_default)
         self.entry_seats.insert(0, "10")
@@ -59,6 +70,7 @@ class SeatingApp:
         tk.Button(control_frame, text="儲存狀態", font=self.font_default, command=self.save_state).pack(side="left", padx=10)
         tk.Button(control_frame, text="載入狀態", font=self.font_default, command=self.load_state).pack(side="left", padx=10)
         tk.Button(control_frame, text="匯出資料", font=self.font_default, command=self.export_data).pack(side="left", padx=10)
+
 
     def create_main_frames(self):
         self.main_frame = tk.Frame(self.root)
@@ -90,6 +102,20 @@ class SeatingApp:
         self.people_frame = self.people_container
 
         tk.Button(self.sidebar, text="新增人員", font=self.font_default, command=self.add_person).pack(pady=10)
+
+    def import_names(self):
+        filepath = filedialog.askopenfilename(filetypes=[("Text/CSV", "*.txt *.csv")])
+        if not filepath:
+            return
+        with open(filepath, "r", encoding="utf-8") as f:
+            for line in f:
+                name = line.strip()
+                if not name or name.startswith("#"):
+                    continue
+                if name not in self.people and name not in self.assigned.values():
+                    self.people.append(name)
+                    self.create_person_label(name)
+        self.update_stats()
 
     def add_person(self):
         name = simpledialog.askstring("新增人員", "請輸入人員名稱：")
@@ -175,6 +201,7 @@ class SeatingApp:
     def generate_tables(self):
         try:
             table_count = int(self.entry_tables.get())
+            main_seats = int(self.entry_main_seats.get())
             seats_per_table = int(self.entry_seats.get())
         except ValueError:
             messagebox.showerror("錯誤", "請輸入數字")
@@ -184,7 +211,13 @@ class SeatingApp:
             messagebox.showerror("錯誤", f"最多只能建立 {self.max_tables} 桌")
             return
 
-        self.table_data = [(seats_per_table, self.color_pool[i % len(self.color_pool)]) for i in range(table_count)]
+        # 第一桌為主桌，使用自訂座位數
+        self.table_data = []
+        if table_count >= 1:
+            self.table_data.append((main_seats, self.color_pool[0]))
+        for i in range(1, table_count):
+            self.table_data.append((seats_per_table, self.color_pool[i % len(self.color_pool)]))
+
         self.draw_tables()
 
     def draw_tables(self):
@@ -209,7 +242,11 @@ class SeatingApp:
 
             self.canvas.create_oval(cx - radius, cy - radius, cx + radius, cy + radius,
                                     fill=color, outline="black", width=2)
-            self.canvas.create_text(cx, cy, text=f"第 {idx + 1} 桌", font=("Yu Gothic", 14, "bold"))
+            # 標示主桌或一般桌
+            if idx == 0:
+                self.canvas.create_text(cx, cy, text="主桌", font=("Yu Gothic", 16, "bold"))
+            else:
+                self.canvas.create_text(cx, cy, text=f"第 {idx + 1} 桌", font=("Yu Gothic", 14, "bold"))
 
             for s in range(seats):
                 angle = 2 * math.pi * s / seats
