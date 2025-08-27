@@ -152,20 +152,6 @@ class SeatingApp:
                 break
         self.update_stats()
 
-    def import_names(self):
-        filepath = filedialog.askopenfilename(filetypes=[("Text/CSV", "*.txt *.csv")])
-        if not filepath:
-            return
-        with open(filepath, "r", encoding="utf-8") as f:
-            for line in f:
-                name = line.strip()
-                if not name or name.startswith("#"):
-                    continue
-                if name not in self.people and name not in self.assigned.values():
-                    self.people.append(name)
-                    self.create_person_label(name)
-        self.update_stats()
-
     def save_state(self):
         state = {
             "tables": int(self.entry_tables.get()),
