@@ -11,9 +11,9 @@ class SeatingApp:
         self.root = root
         self.style = Style("morph")
         self.root.title("圓桌座位安排系統")
-        self.root.geometry("1200x700")
+        self.root.geometry("1400x800")  # 放大視窗
 
-        self.font_default = ("Yu Gothic", 10)
+        self.font_default = ("Yu Gothic", 12)
         self.max_tables = 15
         self.table_data = []
         self.assigned = {}
@@ -46,12 +46,12 @@ class SeatingApp:
 
         tk.Label(control_frame, text="桌數:", font=self.font_default).pack(side="left")
         self.entry_tables = tk.Entry(control_frame, width=5, font=self.font_default)
-        self.entry_tables.insert(0, "5")
+        self.entry_tables.insert(0, "15")
         self.entry_tables.pack(side="left", padx=5)
 
         tk.Label(control_frame, text="每桌座位數:", font=self.font_default).pack(side="left")
         self.entry_seats = tk.Entry(control_frame, width=5, font=self.font_default)
-        self.entry_seats.insert(0, "8")
+        self.entry_seats.insert(0, "10")
         self.entry_seats.pack(side="left", padx=5)
 
         tk.Button(control_frame, text="建立座位圖", font=self.font_default, command=self.generate_tables).pack(side="left", padx=10)
@@ -74,19 +74,16 @@ class SeatingApp:
         self.sidebar = tk.Frame(self.main_frame, width=250)
         self.sidebar.pack(side="right", fill="y")
 
-        tk.Label(self.sidebar, text="人員清單", font=("Yu Gothic", 14)).pack(pady=10)
+        tk.Label(self.sidebar, text="人員清單", font=("Yu Gothic", 14, "bold")).pack(pady=10)
 
         scroll_canvas = tk.Canvas(self.sidebar)
         scrollbar = tk.Scrollbar(self.sidebar, orient="vertical", command=scroll_canvas.yview)
         self.people_container = tk.Frame(scroll_canvas)
 
-        self.people_container.bind(
-            "<Configure>",
-            lambda e: scroll_canvas.configure(scrollregion=scroll_canvas.bbox("all"))
-        )
-
+        self.people_container.bind("<Configure>", lambda e: scroll_canvas.configure(scrollregion=scroll_canvas.bbox("all")))
         scroll_canvas.create_window((0, 0), window=self.people_container, anchor="nw")
         scroll_canvas.configure(yscrollcommand=scrollbar.set)
+
         scroll_canvas.pack(side="left", fill="both", expand=True, padx=10, pady=5)
         scrollbar.pack(side="right", fill="y")
 
@@ -119,7 +116,7 @@ class SeatingApp:
         x = self.canvas.canvasx(event.x)
         y = self.canvas.canvasy(event.y)
         for tag, (sx, sy) in self.seat_positions.items():
-            if abs(sx - x) < 25 and abs(sy - y) < 25:
+            if abs(sx - x) < 35 and abs(sy - y) < 35:
                 if tag in self.assigned:
                     name = self.assigned.pop(tag)
                     if name not in self.people:
@@ -174,6 +171,7 @@ class SeatingApp:
             self.create_person_label(name)
         self.generate_tables()
         self.update_stats()
+
     def generate_tables(self):
         try:
             table_count = int(self.entry_tables.get())
@@ -194,7 +192,7 @@ class SeatingApp:
         width = self.canvas.winfo_width()
         height = self.canvas.winfo_height()
 
-        cols = max(1, width // 300)
+        cols = max(1, width // 350)
         rows = math.ceil(len(self.table_data) / cols)
 
         spacing_x = width // (cols + 1)
@@ -207,19 +205,19 @@ class SeatingApp:
             row = idx // cols
             cx = spacing_x * (col + 1)
             cy = spacing_y * (row + 1)
-            radius = 50
+            radius = 70
 
             self.canvas.create_oval(cx - radius, cy - radius, cx + radius, cy + radius,
                                     fill=color, outline="black", width=2)
-            self.canvas.create_text(cx, cy, text=f"第 {idx + 1} 桌", font=("Yu Gothic", 10, "bold"))
+            self.canvas.create_text(cx, cy, text=f"第 {idx + 1} 桌", font=("Yu Gothic", 14, "bold"))
 
             for s in range(seats):
                 angle = 2 * math.pi * s / seats
-                seat_x = cx + math.cos(angle) * 100
-                seat_y = cy + math.sin(angle) * 100
+                seat_x = cx + math.cos(angle) * 120
+                seat_y = cy + math.sin(angle) * 120
                 tag = f"seat_{idx}_{s}"
                 fill_color = "white" if tag not in self.assigned else "#dfffdc"
-                self.canvas.create_oval(seat_x - 20, seat_y - 20, seat_x + 20, seat_y + 20,
+                self.canvas.create_oval(seat_x - 30, seat_y - 30, seat_x + 30, seat_y + 30,
                                         fill=fill_color, outline="gray", tags=("seat", tag))
                 if tag in self.assigned:
                     name = self.assigned[tag].replace("_", "\n")
@@ -233,19 +231,19 @@ class SeatingApp:
         self.drag_data["text"] = widget["text"]
         self.drag_data["source_tag"] = None
         if not self.drag_data["floating"]:
-            self.drag_data["floating"] = tk.Label(self.root, text=self.drag_data["text"], bg="lightyellow", relief="solid", font=self.font_default)
+            self.drag_data["floating"] = tk.Label(self.root, text=self.drag_data["text"], font=self.font_default, bg="lightyellow", relief="solid")
         self.drag_data["floating"].place(x=event.x_root, y=event.y_root)
 
     def drag_start_from_seat(self, event):
         x = self.canvas.canvasx(event.x)
         y = self.canvas.canvasy(event.y)
         for tag, (sx, sy) in self.seat_positions.items():
-            if abs(sx - x) < 25 and abs(sy - y) < 25 and tag in self.assigned:
+            if abs(sx - x) < 35 and abs(sy - y) < 35 and tag in self.assigned:
                 self.drag_data["widget"] = None
                 self.drag_data["text"] = self.assigned[tag]
                 self.drag_data["source_tag"] = tag
                 if not self.drag_data["floating"]:
-                    self.drag_data["floating"] = tk.Label(self.root, text=self.drag_data["text"], bg="lightyellow", relief="solid", font=self.font_default)
+                    self.drag_data["floating"] = tk.Label(self.root, text=self.drag_data["text"], font=self.font_default, bg="lightyellow", relief="solid")
                 self.drag_data["floating"].place(x=event.x_root, y=event.y_root)
                 break
 
@@ -262,49 +260,52 @@ class SeatingApp:
         dropped = False
 
         for tag, (sx, sy) in self.seat_positions.items():
-            if abs(sx - x) < 25 and abs(sy - y) < 25:
-                # 目標座位有人
-                if tag in self.assigned:
-                    target_person = self.assigned[tag]
-                    if self.drag_data["source_tag"]:
-                        # 從座位拖出來的，交換座位
-                        self.assigned[tag] = self.drag_data["text"]
-                        self.assigned[self.drag_data["source_tag"]] = target_person
+            if abs(sx - x) < 35 and abs(sy - y) < 35:
+                # 拖曳的是從座位來
+                if self.drag_data["source_tag"]:
+                    old_tag = self.drag_data["source_tag"]
+
+                    # 如果新位置有別人 → 交換
+                    if tag in self.assigned:
+                        temp = self.assigned[tag]
+                        self.assigned[old_tag] = temp
                     else:
-                        # 從人員清單拖過來
-                        self.assigned[tag] = self.drag_data["text"]
-                        if self.drag_data["widget"] and self.drag_data["widget"].winfo_exists():
-                            self.drag_data["widget"].destroy()
-                        if self.drag_data["text"] in self.people:
-                            self.people.remove(self.drag_data["text"])
-                        # 把原本座位上的人加回清單
-                        if target_person not in self.people:
-                            self.people.append(target_person)
-                            self.create_person_label(target_person)
-                else:
-                    # 目標座位沒人
-                    if self.drag_data["source_tag"]:
-                        del self.assigned[self.drag_data["source_tag"]]
-                    else:
-                        if self.drag_data["widget"] and self.drag_data["widget"].winfo_exists():
-                            self.drag_data["widget"].destroy()
-                        if self.drag_data["text"] in self.people:
-                            self.people.remove(self.drag_data["text"])
+                        if old_tag in self.assigned:
+                            del self.assigned[old_tag]
+
+                    # 把自己放到新位置
                     self.assigned[tag] = self.drag_data["text"]
+
+                # 拖曳的是從清單來
+                else:
+                    # 如果新位置有別人 → 那個人送回清單
+                    if tag in self.assigned:
+                        old_name = self.assigned[tag]
+                        if old_name not in self.people:
+                            self.people.append(old_name)
+                            self.create_person_label(old_name)
+
+                    # 把新的人放到座位
+                    self.assigned[tag] = self.drag_data["text"]
+                    if self.drag_data["widget"] and self.drag_data["widget"].winfo_exists():
+                        self.drag_data["widget"].destroy()
+                    if self.drag_data["text"] in self.people:
+                        self.people.remove(self.drag_data["text"])
+
                 dropped = True
                 break
-
-        if dropped:
-            self.draw_tables()
 
         if self.drag_data["floating"]:
             self.drag_data["floating"].destroy()
             self.drag_data["floating"] = None
+
         self.drag_data["widget"] = None
         self.drag_data["text"] = ""
         self.drag_data["source_tag"] = None
-        self.update_stats()
 
+        if dropped:
+            self.draw_tables()
+            self.update_stats()
 
     def export_data(self):
         if not self.assigned:
