@@ -62,8 +62,7 @@
    ├── sample_names.txt   # 範例名單
    ├── seat_app.py        # 主程式
    └── demo/
-       ├── demo1.png
-       └── demo2.png
+       └── demo.gif
 ```
 
 ---

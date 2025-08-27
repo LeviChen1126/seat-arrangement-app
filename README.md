@@ -63,8 +63,7 @@ Designed for **banquets**, **weddings**, **conferences**, and other events where
    ├── sample_names.txt   # Sample List
    ├── seat_app.py        # Main
    └── demo/
-       ├── demo1.png
-       └── demo2.png
+       └── demo.gif
 ```
 
 ---
