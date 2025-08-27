@@ -5,7 +5,7 @@
 A **drag-and-drop seating planner** built with Tkinter + ttkbootstrap.  
 Designed for **banquets**, **weddings**, **conferences**, and other events where circular table seating arrangements are needed.
 
-![截圖](docs/screenshot1.png)
+![](docs/demo.gif)
 
 ---
 
