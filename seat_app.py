@@ -87,8 +87,30 @@ class SeatingApp:
 
         tk.Label(self.sidebar, text="人員清單", font=("Arial", 14)).pack(pady=10)
 
-        self.people_frame = tk.Frame(self.sidebar)
-        self.people_frame.pack(fill="both", expand=True, padx=10, pady=5)
+        # 包裹 frame 加入 Canvas 與 Scrollbar
+        scroll_canvas = tk.Canvas(self.sidebar)
+        scrollbar = tk.Scrollbar(self.sidebar, orient="vertical", command=scroll_canvas.yview)
+        self.people_container = tk.Frame(scroll_canvas)
+
+        self.people_container.bind(
+            "<Configure>",
+            lambda e: scroll_canvas.configure(scrollregion=scroll_canvas.bbox("all"))
+        )
+
+        scroll_canvas.create_window((0, 0), window=self.people_container, anchor="nw")
+        scroll_canvas.configure(yscrollcommand=scrollbar.set)
+        # 支援滑鼠滾輪
+        def _on_mousewheel(event):
+            scroll_canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+
+        scroll_canvas.bind_all("<MouseWheel>", _on_mousewheel)  # Windows & Linux
+        scroll_canvas.bind_all("<Button-4>", lambda e: scroll_canvas.yview_scroll(-1, "units"))  # Linux
+        scroll_canvas.bind_all("<Button-5>", lambda e: scroll_canvas.yview_scroll(1, "units"))   # Linux
+
+        scroll_canvas.pack(side="left", fill="both", expand=True, padx=10, pady=5)
+        scrollbar.pack(side="right", fill="y")
+
+        self.people_frame = self.people_container  # 讓其他程式繼續使用 self.people_frame
 
         tk.Button(self.sidebar, text="新增人員", command=self.add_person).pack(pady=10)
 
