@@ -4,7 +4,6 @@ from ttkbootstrap import Style
 import math
 import csv
 import json
-import os
 
 class SeatingApp:
     def __init__(self, root):

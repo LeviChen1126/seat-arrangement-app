@@ -1,16 +1,75 @@
-# Seat Arrangement App (圓桌座位安排系統)
+# Seat Arrangement App
 
-以 Tkinter + ttkbootstrap 製作的 **拖曳式** 圓桌排座工具，適用婚宴、聚會、活動等場合。  
-Features:
-- 拖曳安排座位、座位↔座位交換
-- 匯入名單（支援 # 註解與空行忽略）
-- 儲存/載入狀態（JSON）
-- 匯出 CSV/JSON
-- 主桌座位數（第 1 桌可自訂）
-- 統計總人數 / 已安排 / 未安排
+[中文版本](./README_zh-TW.md)
 
-## 安裝與執行
-```bash
-pip install -r requirements.txt
-python seat_app.py
+A **drag-and-drop seating planner** built with Tkinter + ttkbootstrap.  
+Designed for **banquets**, **weddings**, **conferences**, and other events where circular table seating arrangements are needed.
+
+![截圖](docs/screenshot1.png)
+
+---
+
+## Features
+1. Drag-and-drop seat assignment
+2. Seat-to-seat swap (swap directly by dragging between seats)
+3. Right-click to cancel seat assignment
+4. Customizable **main table seat count** (first table can have unique seat size)
+5. Import guest list (TXT/CSV, ignores empty lines and lines starting with `#`)
+6. Save / Load seating state (JSON format)
+7. Export results to CSV / JSON
+8. Real-time statistics: total / assigned / unassigned people
+9. Up to 15 tables supported
+
+---
+
+## Development Environment
+- Python 3.9+
+- Tkinter (standard library)
+- ttkbootstrap 1.10+
+
+---
+
+## Installation / Usage Example
+
+1. **Prerequisites**
+   - Install **Python 3.9+**  
+   - Ensure Tkinter is available (usually included with Python)  
+   - Install required packages  
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. **Run**
+   ```bash
+   python seat_app.py
+   ```
+
+3. **Usage**
+   - Enter number of tables / seats per table / (main table seats)  
+   - Import or add people → drag them to seats  
+   - Drag between seats to swap; right-click to cancel assignment  
+   - Save / load state (JSON) or export results (CSV/JSON)
+
+---
+
+## Project Structure
 ```
+─── seat-arrangement-app
+   ├── README.md
+   ├── README_zh-TW.md
+   ├── LICENSE
+   ├── .gitignore
+   ├── requirements.txt
+   ├── sample_names.txt   # Sample List
+   ├── seat_app.py        # Main
+   └── demo/
+       ├── demo1.png
+       └── demo2.png
+```
+
+---
+
+## Credits & Acknowledgments
+- [ttkbootstrap](https://github.com/israel-dryer/ttkbootstrap)  
+- [Python Tkinter](https://docs.python.org/3/library/tkinter.html)  
+- All trademarks and copyrights belong to their respective owners.
